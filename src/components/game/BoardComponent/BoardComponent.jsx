@@ -1,18 +1,6 @@
 import "./BoardComponent.css";
 
-export default function BoardComponent({ dimensions, board, onSquareCliked }) {
-  /* const renderBoardComponent = () => {
-    const board = [];
-    for (let xIndex = 0; xIndex < dimensions.x; xIndex++) {
-      let row = [];
-      for (let yIndex = 0; yIndex < dimensions.y; yIndex++) {
-        row.push(<div className="square"></div>);
-      }
-      board.push(row);
-    }
-    return board;
-  }; */
-
+export default function BoardComponent({ board, onSquareCliked }) {
   const getSquareClassName = (x, y) => {
     let className = "";
     if (x === 0) {
