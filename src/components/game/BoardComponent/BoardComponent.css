@@ -1,14 +1,33 @@
 .square{
-    width: 7rem;
-    height: 7rem;
-    border: 3px solid var(--board-border-color);
-    color: var(--accent-text-color);
+    width: 8.5rem;
+    height: 8.5rem;
+    border: 5px solid var(--board-border-color);
+    
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 800;
-    font-size: 5rem;
+    font-size: 5rem;      
 }
+
+.square svg {
+    color: var(--accent-text-color);
+}
+
+.square.animate{
+    animation-duration: 2s;
+    animation-name: showing;
+}
+
+@keyframes showing {
+    from {
+      font-size: 1rem;
+    }
+  
+    to {
+      font-size: 5rem;
+    }
+  }
 
 .square.top-row{
     border-top: none;
@@ -35,9 +54,9 @@
 }
 
 .board.size-3{
-    grid-template-columns: repeat(3, 7rem);
+    grid-template-columns: repeat(3, 8.5rem);
 }
 
 .board.size-4{
-    grid-template-columns: repeat(4, 7rem);
+    grid-template-columns: repeat(4, 8.5rem);
 }

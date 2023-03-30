@@ -1,6 +1,8 @@
 import "./BoardComponent.css";
+import { BsCircle } from "react-icons/bs";
+import { TfiClose } from "react-icons/tfi";
 
-export default function BoardComponent({ board, onSquareCliked }) {
+export default function BoardComponent({ board, onSquareClicked }) {
   const getSquareClassName = (x, y) => {
     let className = "";
     if (x === 0) {
@@ -26,10 +28,16 @@ export default function BoardComponent({ board, onSquareCliked }) {
             className={`square ${getSquareClassName(xIndex, yIndex)}`}
             key={yIndex}
             onClick={() => {
-              onSquareCliked(xIndex, yIndex);
+              onSquareClicked(xIndex, yIndex);
             }}
           >
-            {square}
+            {square === "O" ? (
+              <BsCircle />
+            ) : square === " " ? (
+              " "
+            ) : (
+              <TfiClose />
+            )}
           </div>
         );
       });

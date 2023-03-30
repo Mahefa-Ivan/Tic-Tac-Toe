@@ -1,12 +1,12 @@
 :root{
-  --primary-color: #121212;
-  --accent-color: yellow;
-  --board-border-color: rgb(80, 143, 238);
+  --primary-color: #160f20;
+  --accent-color: rgb(255, 0, 55);
+  --board-border-color: rgb(246, 88, 44);
   --text-color: rgb(143, 142, 142);
   --accent-text-color: rgb(226, 224, 224);
 }
 
-h1,h2,h3,h4,h5,h6{
+h1,h2,h3,h4,h5,h6, button *, svg *{
   color: var(--accent-text-color);
 }
 
@@ -36,11 +36,24 @@ html, body{
   gap: 3rem;
 }
 
+.wrapper{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
 button{
   background-color: var(--accent-color);
   color: black;
   padding: 1rem;
   border: none;
+}
+
+.reset-button{
+  background-color: var(--accent-color);
+  padding: 1rem 2rem;
+  font-size: 2rem;
+  color: var(--accent-text-color);
 }
 
 .buttons{

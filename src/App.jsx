@@ -1,92 +1,31 @@
 import BoardComponent from "./components/game/BoardComponent/BoardComponent";
+import FooterComponent from "./components/ui/FooterComponent/FooterComponent";
 import { useState } from "react";
+import { useEffect } from "react";
+import {
+  checkColumns,
+  checkLeftDiagonal,
+  checkRows,
+  checkRightDiagonal,
+} from "./utils/boardChecking";
 
 function App() {
-  /* const size4 = [
-    [" ", " ", " ", " "],
-    [" ", " ", " ", " "],
-    [" ", " ", " ", " "],
-    [" ", " ", " ", " "],
-  ]; */
-
-  const size3 = [
+  const default_board = [
     [" ", " ", " "],
     [" ", " ", " "],
     [" ", " ", " "],
   ];
-  const [board, setBoard] = useState(size3);
 
-  const [turnIndicator, setTurnIndicator] = useState(1);
-
-  const getMark = () => {
-    if (turnIndicator % 2) {
-      setTurnIndicator(turnIndicator + 1);
-      return "O";
-    }
-    setTurnIndicator(turnIndicator + 1);
-    return "X";
+  const default_score = {
+    o: 0,
+    x: 0,
+    draw: 0,
   };
 
-  const handleResetBoard = () => {
-    setBoard(size3);
-    setTurnIndicator(1);
-  };
+  const [board, setBoard] = useState(default_board);
+  const [score, setScore] = useState(default_score);
 
-  const checkRow = (index) => {
-    return (
-      board[index].join("") === "X".repeat(board.length) ||
-      board[index].join("") === "O".repeat(board.length)
-    );
-  };
-
-  const checkRows = () => {
-    for (let i = 0; i < board.length; i++) {
-      if (checkRow(i)) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  const checkLeftDiagonal = () => {
-    let diagonal = "";
-    for (let i = 0; i < board.length; i++) {
-      diagonal += board[i][i];
-    }
-    return (
-      diagonal === "X".repeat(board.length) ||
-      diagonal === "O".repeat(board.length)
-    );
-  };
-
-  const checkRightDiagonal = () => {
-    // TODO: stop being lazy and implement it the correct way already
-    let diagonal = "";
-    diagonal += board[2][0] + board[1][1] + board[0][2];
-    return (
-      diagonal === "X".repeat(board.length) ||
-      diagonal === "O".repeat(board.length)
-    );
-  };
-
-  const checkColumn = (index) => {
-    let column = "";
-    for (let i = 0; i < board.length; i++) {
-      column += board[i][index];
-    }
-    return (
-      column === "X".repeat(board.length) || column === "O".repeat(board.length)
-    );
-  };
-
-  const checkColumns = () => {
-    for (let i = 0; i < board.length; i++) {
-      if (checkColumn(i)) {
-        return true;
-      }
-    }
-    return false;
-  };
+  const [turnIndex, setturnIndex] = useState(1);
 
   const boardIsFull = () => {
     let counter = 0;
@@ -97,51 +36,81 @@ function App() {
         }
       }
     }
-    console.log(counter);
     return counter === board.length * board.length;
   };
 
   const gameIsOver = () => {
     return (
-      checkRows() ||
-      checkColumns() ||
-      checkLeftDiagonal() ||
-      checkRightDiagonal()
+      checkRows(board) ||
+      checkColumns(board) ||
+      checkLeftDiagonal(board) ||
+      checkRightDiagonal(board)
     );
   };
 
-  const handleSquareClicked = (positionX, positionY) => {
-    if (gameIsOver()) {
-      return turnIndicator % 2 ? "O" : "X";
+  const handleScoring = () => {
+    const clone = { ...score };
+    if (boardIsFull()) {
+      clone.draw += 1;
+      setScore(clone);
     }
+    if (gameIsOver() && turnIndex % 2) {
+      clone.x += 1;
+      setScore(clone);
+    }
+    if (gameIsOver() && !(turnIndex % 2)) {
+      clone.o += 1;
+      setScore(clone);
+    }
+  };
 
+  useEffect(() => {
+    handleScoring();
+    console.log("App rerendered");
+  }, [board]); // DO NOT LISTEN TO THE WARNING, if you do add handleScoring as a dependecy it will loop forever
+
+  const getMark = () => {
+    if (turnIndex % 2) {
+      setturnIndex(turnIndex + 1);
+      return "O";
+    }
+    setturnIndex(turnIndex + 1);
+    return "X";
+  };
+
+  const handleResetBoard = () => {
+    setBoard(default_board);
+    setturnIndex(1);
+  };
+
+  const handleSquareClicked = (positionX, positionY) => {
+    if (boardIsFull()) {
+      const clone = { ...score };
+      clone.draw += 1;
+      setScore(clone);
+      console.log(clone);
+    }
+    if (gameIsOver()) {
+      return false;
+    }
     if (board[positionX][positionY] !== " ") {
       return false;
     }
 
-    const boardClone = board;
+    const boardClone = [...board];
 
     boardClone[positionX][positionY] = getMark();
     setBoard(boardClone);
-    return true;
-  };
 
-  const getHeaderText = () => {
-    if (gameIsOver()) {
-      let a = turnIndicator % 2 ? "X" : "O";
-      return `${a} won`;
-    }
-    if (boardIsFull()) {
-      return "Draw";
-    }
-    return "Tic-Tac-Toe";
+    return true;
   };
 
   return (
     <div className="container">
-      <h2>{getHeaderText()}</h2>
-      <BoardComponent board={board} onSquareCliked={handleSquareClicked} />
-      <button onClick={handleResetBoard}>New game</button>
+      <div className="wrapper">
+        <BoardComponent board={board} onSquareClicked={handleSquareClicked} />
+        <FooterComponent buttonOnClick={handleResetBoard} score={score} />
+      </div>
     </div>
   );
 }
